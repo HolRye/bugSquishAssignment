@@ -4,53 +4,57 @@ let sy = 0;
 let sw = 80;
 let sh = 80;
 let u = 0, v = 0;
-let animationLength = 9;
+let animationLength = 8;
 let currentFrame = 0;
 let x = 200;
 let moving = 0;
 let xDirection = 1;
 let walkingAnimation;
-let walkingAnimation2;
-let walkingAnimation3
+
+let spriteSheetFilenames = ["BugFella.png", "character1.png", "MeatGuy.png", "VikingFella.png"];
+let spriteSheets = [];
+let totalAnimations = 3;
+let animations = [];
+
 
 
 function preload() {
-  character = loadImage('assets/character1.png'); 
-  meatMan = loadImage('assets/MeatGuy.png');
-  vikingMan = loadImage('assets/VikingFella.png');
+  for (let i=0; i < spriteSheetFilenames.length; i++) {
+    spriteSheets[i] = loadImage("assets/" + spriteSheetFilenames[i]);
+  }
+  
 }
 
 function setup() {
   createCanvas(400, 400);
   imageMode(CENTER);
 
-  walkingAnimation = new WalkingAnimation(character,80,80,150,200,9);
-  walkingAnimation2 = new WalkingAnimation(meatMan,80,80,200,300,9);
-  walkingAnimation3 = new WalkingAnimation(vikingMan,80,80,250,100,9);
+  for (let i=0; i < totalAnimations; i++) {
+    animations[i] = walkingAnimation = new WalkingAnimation(random(spriteSheets),80,80,random(100,300),random(100,300),8);
+  }
 }
 
 function draw() {
   background(220);
 
-  walkingAnimation.draw();
-  walkingAnimation2.draw();
-  walkingAnimation3.draw();
+  for (let i=0; i < animations.length; i++) {
+    animations[i].draw();
+  }
+  
 }
 function keyPressed() {
  walkingAnimation.keyPressed();
- walkingAnimation2.keyPressed();
- walkingAnimation3.keyPressed();
+
 }
 
 function keyReleased(){
   walkingAnimation.keyReleased();
-  walkingAnimation2.keyReleased();
-  walkingAnimation3.keyReleased();
+  
 }
 
 
 class WalkingAnimation {
-  constructor(character, sw, sh, dx, dy){
+  constructor(character, sw, sh, dx, dy, animationLength){
     this.character = character;
     this.sw = sw;
     this.sh = sh;
@@ -72,21 +76,35 @@ class WalkingAnimation {
     scale(this.xDirection,1);
     image(this.character,0,0,this.sw,this.sh,this.u*this.sw,this.v*this.sh,this.sw,this.sh);
     pop();
-    if (frameCount % 8 == 0) {
+    if (frameCount % 7 == 0) {
       this.currentFrame++;
        }
+
       this.dx += this.moving;
+
+      if (this.dx > width || this.dx < 0) {
+        
+      }
   }
+  
+  moveRight() {
+    this.moving = 1;
+    this.xDirection = 1;
+  }
+
+  moveLeft() {
+    this.moving = -1;
+    this.xDirection = -1;
+  }
+
 
   keyPressed() {
     if (keyCode === RIGHT_ARROW) {
-      this.moving = 1;
-      this.xDirection = 1;
+
       this.currentFrame = 1;
     }
     else if (keyCode === LEFT_ARROW){
-      this.moving = -1;
-      this.xDirection = -1;
+      
       this.currentFrame = 1;
     }
   }
